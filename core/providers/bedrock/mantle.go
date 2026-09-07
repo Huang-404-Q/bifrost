@@ -79,6 +79,22 @@ func SignMantleV4Headers(
 	region string,
 	extraHeaders map[string]string,
 ) (map[string]string, *schemas.BifrostError) {
+	return signBedrockV4Headers(ctx, jsonData, requestURL, accept, key, region, extraHeaders, bedrockMantleSigningService)
+}
+
+// signBedrockV4Headers is the service-agnostic body of SignMantleV4Headers. The
+// Bedrock invoke path (bedrock.go, InvokeModel section) signs for bedrockSigningService with
+// the same mechanics: the anthropic HTTP handlers send exactly the headers this
+// returns, so the signature covers the bytes and Accept that go on the wire.
+func signBedrockV4Headers(
+	ctx *schemas.BifrostContext,
+	jsonData []byte,
+	requestURL, accept string,
+	key schemas.Key,
+	region string,
+	extraHeaders map[string]string,
+	service string,
+) (map[string]string, *schemas.BifrostError) {
 	method := http.MethodPost
 	if jsonData == nil {
 		method = http.MethodGet
@@ -113,7 +129,7 @@ func SignMantleV4Headers(
 			RoleSessionName: key.BedrockMantleKeyConfig.RoleSessionName,
 		}
 	}
-	if bifrostErr := signAWSRequest(ctx, req, keyCfg, region, bedrockMantleSigningService); bifrostErr != nil {
+	if bifrostErr := signAWSRequest(ctx, req, keyCfg, region, service); bifrostErr != nil {
 		return nil, bifrostErr
 	}
 	// Return the headers exactly as signed: signAWSRequest defaults an empty Accept/Content-Type
