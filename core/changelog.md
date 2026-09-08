@@ -40,3 +40,4 @@
 - fix: retry video job polling and record video debug data (#6728)
 - fix: translate `cache_control` breakpoints for OpenRouter Claude models on the Responses API (#6692)
 - fix: block Teredo addresses in the dial-time SSRF guard and run MCP auth through SSRF checks (#6757, #6760)
+- fix: make the streaming first-chunk peek observe the request context so a cancelled or expired request returns 499/504 and releases its worker instead of waiting out `stream_idle_timeout_in_seconds` (#6974)
