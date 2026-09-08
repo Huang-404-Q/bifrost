@@ -85,6 +85,7 @@ export const RequestTypes = [
 	"responses_cancel",
 	"responses_input_items",
 	"embedding",
+	"batch_embedding",
 	"rerank",
 	"speech",
 	"speech_stream",
@@ -292,6 +293,7 @@ export const RequestTypeLabels = {
 	responses_input_items: "Responses Input Items",
 
 	embedding: "Embedding",
+	batch_embedding: "Batch Embedding",
 	rerank: "Rerank",
 
 	speech: "Speech",
@@ -381,6 +383,7 @@ export const RequestTypeColors = {
 	responses_input_items: "bg-teal-100 text-teal-800",
 
 	embedding: "bg-red-100 text-red-800",
+	batch_embedding: "bg-red-100 text-red-800",
 	rerank: "bg-fuchsia-100 text-fuchsia-800",
 
 	speech: "bg-purple-100 text-purple-800",
