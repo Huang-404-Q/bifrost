@@ -372,6 +372,27 @@ func TestMetricsEnabledGating(t *testing.T) {
 	}
 }
 
+// TestMarshalConfigForStorageKeepsToggles guards the hand-maintained storage whitelist
+// (Config.MarshalForStorage's configStorage struct): a toggle added to Config must be
+// added there too, or it is silently dropped on save and the UI reverts it. Regression
+// test for overhead_breakdown_enabled, which was initially dropped this way.
+func TestMarshalConfigForStorageKeepsToggles(t *testing.T) {
+	p := newTestPlugin(t)
+	out, err := p.MarshalConfigForStorage(map[string]any{
+		"overhead_breakdown_enabled": true,
+		"metrics_enabled":            false,
+	})
+	if err != nil {
+		t.Fatalf("MarshalConfigForStorage: %v", err)
+	}
+	if v, ok := out["overhead_breakdown_enabled"].(bool); !ok || !v {
+		t.Errorf("overhead_breakdown_enabled dropped by storage: got %v (%T), want true", out["overhead_breakdown_enabled"], out["overhead_breakdown_enabled"])
+	}
+	if v, ok := out["metrics_enabled"].(bool); !ok || v {
+		t.Errorf("metrics_enabled = %v, want false to survive storage round-trip", out["metrics_enabled"])
+	}
+}
+
 // TestGetMetricsGathererCombinesRegistries asserts the /metrics scrape gatherer exposes both
 // Bifrost metrics (from p.registry) and the Go/process runtime collectors (from p.systemRegistry).
 func TestGetMetricsGathererCombinesRegistries(t *testing.T) {
