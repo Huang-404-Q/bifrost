@@ -306,10 +306,16 @@ VirtualKeyProviderConfig:
       type: array
       items:
         type: string
+      description: >-
+        Allowlist. `["*"]` allows every model; an empty list denies all. A list
+        may not mix `*` with other entries. Entries prefixed with `regex:` are RE2 patterns, matched case-insensitively as a full match against the model name and `provider/model`.
     blacklisted_models:
       type: array
       items:
         type: string
+      description: >-
+        Denylist, which wins over the allowlist. `["*"]` blocks everything.
+        Entries prefixed with `regex:` are RE2 patterns, matched case-insensitively as a full match against the model name and `provider/model`.
     allow_all_keys:
       type: boolean
     rate_limit_id:
@@ -460,10 +466,16 @@ CreateVirtualKeyRequest:
             type: array
             items:
               type: string
+            description: >-
+              Allowlist. `["*"]` allows every model; an empty list denies all.
+              Entries prefixed with `regex:` are RE2 patterns, matched case-insensitively as a full match against the model name and `provider/model`.
           blacklisted_models:
             type: array
             items:
               type: string
+            description: >-
+              Denylist, which wins over the allowlist. `["*"]` blocks everything.
+              Entries prefixed with `regex:` are RE2 patterns, matched case-insensitively as a full match against the model name and `provider/model`.
           budgets:
             type: array
             description: Provider-specific budget quotas
@@ -538,10 +550,16 @@ UpdateVirtualKeyRequest:
             type: array
             items:
               type: string
+            description: >-
+              Allowlist. `["*"]` allows every model; an empty list denies all.
+              Entries prefixed with `regex:` are RE2 patterns, matched case-insensitively as a full match against the model name and `provider/model`.
           blacklisted_models:
             type: array
             items:
               type: string
+            description: >-
+              Denylist, which wins over the allowlist. `["*"]` blocks everything.
+              Entries prefixed with `regex:` are RE2 patterns, matched case-insensitively as a full match against the model name and `provider/model`.
           budgets:
             type: array
             description: Provider-specific budget quotas. Replaces all budgets for that provider config when provided.
