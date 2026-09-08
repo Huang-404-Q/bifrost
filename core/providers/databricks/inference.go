@@ -395,6 +395,11 @@ func (provider *DatabricksProvider) Embedding(ctx *schemas.BifrostContext, key s
 	)
 }
 
+// BatchEmbedding is not supported by the Databricks provider.
+func (provider *DatabricksProvider) BatchEmbedding(ctx *schemas.BifrostContext, key schemas.Key, request *schemas.BifrostBatchEmbeddingRequest) (*schemas.BifrostEmbeddingResponse, *schemas.BifrostError) {
+	return nil, providerUtils.NewUnsupportedOperationError(schemas.BatchEmbeddingRequest, provider.GetProviderKey())
+}
+
 // Responses performs a responses request. Model Serving documents the OpenAI Responses API
 // at /serving-endpoints/responses, but pay-per-token foundation model endpoints answer it
 // with "Responses API passthrough is not supported" (HTTP 400). The Unity AI Gateway MLflow
