@@ -45,7 +45,28 @@ func SecurityHeadersMiddleware() schemas.BifrostHTTPMiddleware {
 				ctx.Response.Header.Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 			}
 			next(ctx)
+			setAPINoStoreDefault(ctx)
 		}
+	}
+}
+
+// apiPathPrefix is the route prefix whose responses are session, config, or tenant data and
+// must never be served from a shared cache.
+const apiPathPrefix = "/api/"
+
+// setAPINoStoreDefault stamps Cache-Control: no-store on /api/ responses that did not set a
+// caching policy of their own. Bifrost is routinely deployed behind a CDN (Cloudflare, etc.)
+// whose "cache everything" rules store any response lacking a Cache-Control header for hours.
+// A cached /api/session/is-auth-enabled body then reports another user's valid session to a
+// browser with no session, and the dashboard loops between login and logout; a cached
+// /api/config or /api/notifications body leaks tenant data across users. Handlers that set an
+// explicit policy (streaming no-cache, versioned branding assets) keep it.
+func setAPINoStoreDefault(ctx *fasthttp.RequestCtx) {
+	if !strings.HasPrefix(string(ctx.Path()), apiPathPrefix) {
+		return
+	}
+	if len(ctx.Response.Header.Peek("Cache-Control")) == 0 {
+		ctx.Response.Header.Set("Cache-Control", "no-store")
 	}
 }
 
